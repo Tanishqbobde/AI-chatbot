@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>AI CHATBOT</title>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Segoe UI, Arial;
+}
+
+/* Page background */
+
+body{
+height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+background:#cde0f7;
+}
+
+/* Chat container */
+
+.chatbot-container{
+width:600px;
+height:500px;
+background:rgb(49, 49, 49);
+border-radius:12px;
+box-shadow:0 8px 25px rgba(0,0,0,0.15);
+display:flex;
+flex-direction:column;
+overflow:hidden;
+transition:0.2s;
+}
+
+/* Soft haptic hover */
+
+.chatbot-container:hover{
+transform:translateY(-2px);
+box-shadow:0 12px 30px rgba(0,0,0,0.2);
+}
+
+/* Header */
+
+.chatbot-header{
+padding:14px;
+background:#002c66;
+color:rgb(255, 255, 255);
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.chatbot-avatar{
+width:32px;
+height:32px;
+border-radius:50%;
+background:rgb(181, 196, 245);
+color:#203d64;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:16px;
+}
+
+.chatbot-title{
+font-size:16px;
+font-weight:600;
+}
+
+/* Chat area */
+
+.chat-area{
+flex:1;
+padding:16px;
+overflow-y:auto;
+display:flex;
+flex-direction:column;
+gap:12px;
+background:#eaeaeb;
+}
+
+/* Message container */
+
+.msg{
+display:flex;
+}
+
+.msg.user{
+justify-content:flex-end;
+}
+
+/* Message bubble */
+
+.msg-bubble{
+padding:10px 14px;
+border-radius:10px;
+font-size:14px;
+max-width:70%;
+line-height:1.4;
+}
+
+/* User message */
+
+.msg.user .msg-bubble{
+background:#2b7cff;
+color:rgb(255, 255, 255);
+border-bottom-right-radius:4px;
+}
+
+/* Bot message */
+
+.msg.bot .msg-bubble{
+background:#b1bbd1;
+color:#000000;
+border-bottom-left-radius:4px;
+}
+
+/* Input area */
+
+.chatbot-input-area{
+display:flex;
+padding:10px;
+border-top:1px solid #dfe3ea;
+background:white;
+gap:8px;
+}
+
+/* Input */
+
+.chatbot-input{
+flex:1;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccd3df;
+font-size:14px;
+outline:none;
+}
+
+/* Input focus */
+
+.chatbot-input:focus{
+border-color:#2b7cff;
+}
+
+/* Send button */
+
+.chatbot-send-btn{
+width:42px;
+border:none;
+border-radius:6px;
+background:#2b7cff;
+color:white;
+font-size:16px;
+cursor:pointer;
+transition:0.2s;
+}
+
+/* Haptic click feel */
+
+.chatbot-send-btn:active{
+transform:scale(0.95);
+}
+
+/* Hover */
+
+.chatbot-send-btn:hover{
+background:#1f5fd1;
+}
+
+/* Typing dots */
+
+.typing{
+display:flex;
+gap:4px;
+}
+
+.dot{
+width:6px;
+height:6px;
+background:#777;
+border-radius:50%;
+animation:blink 1.4s infinite;
+}
+
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+
+@keyframes blink{
+0%{opacity:.2}
+20%{opacity:1}
+100%{opacity:.2}
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="chatbot-container">
+
+<div class="chatbot-header">
+<div class="chatbot-avatar">🤖</div>
+<div class="chatbot-title">AI CHATBOT</div>
+</div>
+
+<div class="chat-area" id="chat"></div>
+
+<form class="chatbot-input-area" id="chatForm">
+
+<input
+type="text"
+class="chatbot-input"
+id="userInput"
+placeholder="Type your message..."
+autocomplete="off"
+required
+/>
+
+<button class="chatbot-send-btn">➤</button>
+
+</form>
+
+</div>
+
+<script>
+
+const chat=document.getElementById("chat")
+const form=document.getElementById("chatForm")
+const input=document.getElementById("userInput")
+
+function addMessage(msg,sender){
+
+const msgDiv=document.createElement("div")
+msgDiv.className=`msg ${sender}`
+
+const bubble=document.createElement("div")
+bubble.className="msg-bubble"
+
+bubble.textContent=msg
+
+msgDiv.appendChild(bubble)
+chat.appendChild(msgDiv)
+
+chat.scrollTop=chat.scrollHeight
+
+}
+
+function typingIndicator(){
+
+const msgDiv=document.createElement("div")
+msgDiv.className="msg bot"
+
+const bubble=document.createElement("div")
+bubble.className="msg-bubble typing"
+
+bubble.innerHTML=`
+<div class="dot"></div>
+<div class="dot"></div>
+<div class="dot"></div>
+`
+
+msgDiv.appendChild(bubble)
+chat.appendChild(msgDiv)
+
+chat.scrollTop=chat.scrollHeight
+
+return msgDiv
+
+}
+
+form.addEventListener("submit",async(e)=>{
+
+e.preventDefault()
+
+const userMsg=input.value.trim()
+
+if(!userMsg)return
+
+addMessage(userMsg,"user")
+
+input.value=""
+
+const loader=typingIndicator()
+
+try{
+
+const res=await fetch("/chat",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({message:userMsg})
+
+})
+
+const data=await res.json()
+
+chat.removeChild(loader)
+
+addMessage(data.reply,"bot")
+
+}catch{
+
+chat.removeChild(loader)
+
+addMessage("Server error","bot")
+
+}
+
+})
+
+</script>
+
+</body>
+</html>
