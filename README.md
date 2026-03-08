@@ -1,4 +1,4 @@
-# AI Chatbot using Groq and LLaMA-3
+# AI Chatbot using Groq and LLaMA-3 
 
 ## Description
 This project is an AI-powered chatbot that allows users to interact through natural language conversations. The chatbot is designed to answer questions, assist users, and provide intelligent responses in real time.
