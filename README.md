@@ -12,7 +12,6 @@ When a user sends a message through the interface, the request is processed by t
 ## Technologies Used
 - Python
 - HTML
-- CSS
 - Groq API
 - LLaMA-3 Model
 
@@ -22,3 +21,5 @@ When a user sends a message through the interface, the request is processed by t
 - Interactive web-based chat interface
 - Integration of frontend with Python backend
 - Natural language understanding using LLaMA-3
+
+
