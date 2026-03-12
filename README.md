@@ -1,7 +1,7 @@
 # AI Chatbot using Groq and LLaMA-3 
 
 ## Description
-This project is an AI-powered chatbot that allows users to interact through natural language conversations. The chatbot is designed to answer questions, assist users, and provide intelligent responses in real time.
+This project is an AI-powered chatbot that allows users to interact through natural language conversations. The chatbot is designed to answer questions, assist users, and provide intelligent responses in real time. Do set the virtual env while setting up your Groq ai chatbot.
 
 The system uses the **Groq API** to access the **LLaMA-3 large language model**, which enables fast and efficient AI response generation. Groq provides high-speed inference, allowing the chatbot to respond quickly while maintaining strong language understanding capabilities.
 
